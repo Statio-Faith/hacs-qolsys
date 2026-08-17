@@ -1,0 +1,62 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Qolsys IQ Panel",
+        "data": {
+          "panel_host": "Panel IP address",
+          "panel_port": "Panel port",
+          "panel_token": "Panel token"
+        },
+        "data_description": {
+          "panel_host": "IP address of your Qolsys IQ Panel on the local network",
+          "panel_port": "Port the panel listens on (default: 12345)",
+          "panel_token": "6-digit token from Panel Settings > Advanced Settings > 3rd Party Connections"
+        }
+      },
+      "codes": {
+        "title": "Security Codes",
+        "data": {
+          "panel_user_code": "Panel user code",
+          "ha_user_code": "Home Assistant user code",
+          "code_arm_required": "Require code to arm",
+          "code_disarm_required": "Require code to disarm",
+          "code_trigger_required": "Require code to trigger alarm"
+        },
+        "data_description": {
+          "panel_user_code": "4-6 digit code used when sending disarm commands to the panel. Leave blank to use the code entered in HA.",
+          "ha_user_code": "If set, HA validates this code before forwarding to the panel.",
+          "code_arm_required": "Require a code in HA UI to arm the alarm",
+          "code_disarm_required": "Require a code in HA UI to disarm the alarm",
+          "code_trigger_required": "Require a code in HA UI to trigger the alarm"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to panel. Check host, port, and token.",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "Panel is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Qolsys IQ Panel Options",
+        "data": {
+          "arm_away_exit_delay": "Arm Away exit delay (seconds)",
+          "arm_stay_exit_delay": "Arm Stay exit delay (seconds)",
+          "arm_away_bypass": "Bypass zones on Arm Away",
+          "arm_stay_bypass": "Bypass zones on Arm Stay",
+          "default_trigger_command": "Default trigger command",
+          "default_sensor_device_class": "Default sensor device class",
+          "enable_static_sensors_by_default": "Enable static sensors by default",
+          "panel_unique_id": "Panel unique ID",
+          "panel_device_name": "Panel device name",
+          "arm_type_custom_bypass": "Custom bypass arm type"
+        }
+      }
+    }
+  }
+}

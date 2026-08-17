@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hacs-qolsys"
+version = "1.0.0"
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+test = [
+    "pytest-homeassistant-custom-component==0.13.109",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["custom_components*"]
