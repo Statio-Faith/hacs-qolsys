@@ -5,18 +5,10 @@ import logging
 from homeassistant.components.alarm_control_panel import (
     AlarmControlPanelEntity,
     AlarmControlPanelEntityFeature,
+    AlarmControlPanelState,
     CodeFormat,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    STATE_ALARM_ARMED_AWAY,
-    STATE_ALARM_ARMED_HOME,
-    STATE_ALARM_ARMED_NIGHT,
-    STATE_ALARM_ARMING,
-    STATE_ALARM_DISARMED,
-    STATE_ALARM_PENDING,
-    STATE_ALARM_TRIGGERED,
-)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -34,14 +26,14 @@ from .qolsys.partition import QolsysPartition
 
 LOGGER = logging.getLogger(__name__)
 
-_STATUS_MAP: dict[str, str] = {
-    "DISARM": STATE_ALARM_DISARMED,
-    "ARM_STAY": STATE_ALARM_ARMED_HOME,
-    "ARM_AWAY": STATE_ALARM_ARMED_AWAY,
-    "ARM_NIGHT": STATE_ALARM_ARMED_NIGHT,
-    "ALARM": STATE_ALARM_TRIGGERED,
-    "EXIT_DELAY": STATE_ALARM_ARMING,
-    "ENTRY_DELAY": STATE_ALARM_PENDING,
+_STATUS_MAP: dict[str, AlarmControlPanelState] = {
+    "DISARM": AlarmControlPanelState.DISARMED,
+    "ARM_STAY": AlarmControlPanelState.ARMED_HOME,
+    "ARM_AWAY": AlarmControlPanelState.ARMED_AWAY,
+    "ARM_NIGHT": AlarmControlPanelState.ARMED_NIGHT,
+    "ALARM": AlarmControlPanelState.TRIGGERED,
+    "EXIT_DELAY": AlarmControlPanelState.ARMING,
+    "ENTRY_DELAY": AlarmControlPanelState.PENDING,
 }
 
 
@@ -97,7 +89,7 @@ class QolsysAlarmControlPanel(AlarmControlPanelEntity):
         return self._partition
 
     @property
-    def state(self) -> str | None:
+    def alarm_state(self) -> AlarmControlPanelState | None:
         if not self._coordinator.available:
             return None
         return _STATUS_MAP.get(self._partition.status.upper())

@@ -69,8 +69,10 @@ class QolsysSocket(object):
             try:
                 self._logger.info('Establishing connection to '
                                   f'{server[0]}:{server[1]}')
-                reader, writer = await asyncio.open_connection(
-                    *server, ssl=context, server_hostname='')
+                reader, writer = await asyncio.wait_for(
+                    asyncio.open_connection(*server, ssl=context, server_hostname=''),
+                    timeout=30,
+                )
                 self._writer = writer
 
                 await self.send(QolsysActionInfo())
