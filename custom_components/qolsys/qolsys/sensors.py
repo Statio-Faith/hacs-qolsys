@@ -2,11 +2,11 @@ import json
 import logging
 import time
 
-from qolsys.exceptions import UnableToParseSensorException
-from qolsys.exceptions import UnknownQolsysSensorException
-from qolsys.observable import QolsysObservable
-from qolsys.partition import QolsysPartition
-from qolsys.utils import find_subclass
+from .exceptions import UnableToParseSensorException
+from .exceptions import UnknownQolsysSensorException
+from .observable import QolsysObservable
+from .partition import QolsysPartition
+from .utils import find_subclass
 
 
 LOGGER = logging.getLogger(__name__)

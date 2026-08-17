@@ -1,8 +1,8 @@
 import logging
 
-from qolsys.exceptions import QolsysGwConfigIncomplete
-from qolsys.exceptions import QolsysGwConfigError
-from qolsys.utils import get_mac_from_host
+from .exceptions import QolsysGwConfigIncomplete
+from .exceptions import QolsysGwConfigError
+from .utils import get_mac_from_host
 
 
 LOGGER = logging.getLogger(__name__)

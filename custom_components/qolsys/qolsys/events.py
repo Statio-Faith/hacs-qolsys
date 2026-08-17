@@ -3,12 +3,12 @@ import logging
 
 from types import SimpleNamespace
 
-from qolsys.exceptions import UnableToParseEventException
-from qolsys.exceptions import UnknownQolsysEventException
-from qolsys.exceptions import UnknownQolsysSensorException
-from qolsys.partition import QolsysPartition
-from qolsys.utils import find_subclass
-from qolsys.sensors import QolsysSensor
+from .exceptions import UnableToParseEventException
+from .exceptions import UnknownQolsysEventException
+from .exceptions import UnknownQolsysSensorException
+from .partition import QolsysPartition
+from .utils import find_subclass
+from .sensors import QolsysSensor
 
 LOGGER = logging.getLogger(__name__)
 

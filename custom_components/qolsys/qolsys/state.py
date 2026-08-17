@@ -1,8 +1,8 @@
 import logging
 
-from qolsys.events import QolsysEventInfoSummary
-from qolsys.exceptions import QolsysException
-from qolsys.observable import QolsysObservable
+from .events import QolsysEventInfoSummary
+from .exceptions import QolsysException
+from .observable import QolsysObservable
 
 
 LOGGER = logging.getLogger(__name__)

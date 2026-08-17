@@ -3,12 +3,12 @@ import json
 import logging
 import ssl
 
-from qolsys.actions import QolsysAction
-from qolsys.actions import QolsysActionInfo
-from qolsys.events import QolsysEvent
-from qolsys.exceptions import UnknownQolsysEventException
-from qolsys.exceptions import UnknownQolsysSensorException
-from qolsys.utils import LoggerCallback
+from .actions import QolsysAction
+from .actions import QolsysActionInfo
+from .events import QolsysEvent
+from .exceptions import UnknownQolsysEventException
+from .exceptions import UnknownQolsysSensorException
+from .utils import LoggerCallback
 
 
 LOGGER = logging.getLogger(__name__)

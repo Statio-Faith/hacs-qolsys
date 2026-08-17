@@ -1,14 +1,14 @@
 import json
 import logging
 
-from qolsys.actions import QolsysActionArmAway
-from qolsys.actions import QolsysActionArmStay
-from qolsys.actions import QolsysActionDisarm
-from qolsys.actions import QolsysActionTrigger
-from qolsys.exceptions import UnknownQolsysControlException
-from qolsys.exceptions import MissingUserCodeException
-from qolsys.exceptions import InvalidUserCodeException
-from qolsys.utils import find_subclass
+from .actions import QolsysActionArmAway
+from .actions import QolsysActionArmStay
+from .actions import QolsysActionDisarm
+from .actions import QolsysActionTrigger
+from .exceptions import UnknownQolsysControlException
+from .exceptions import MissingUserCodeException
+from .exceptions import InvalidUserCodeException
+from .utils import find_subclass
 
 
 LOGGER = logging.getLogger(__name__)
