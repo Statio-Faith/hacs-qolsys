@@ -57,6 +57,7 @@ class QolsysCoordinator:
         self._session_token: str = str(uuid.uuid4())
         self._available: bool = False
         self._tasks: list[asyncio.Task] = []
+        self._ready_event = asyncio.Event()
 
         self._socket = QolsysSocket(
             hostname=self._cfg.panel_host,
@@ -121,9 +122,13 @@ class QolsysCoordinator:
     async def _on_hass_stop(self, _event: Event) -> None:
         await self.async_shutdown()
 
+    async def wait_for_ready(self) -> None:
+        await self._ready_event.wait()
+
     async def _on_connected(self) -> None:
         LOGGER.debug("Connected to Qolsys panel")
         self._available = True
+        self._ready_event.set()
 
     async def _on_disconnected(self) -> None:
         LOGGER.debug("Disconnected from Qolsys panel")

@@ -25,6 +25,7 @@ from .qolsys.control import (
 from .qolsys.partition import QolsysPartition
 
 LOGGER = logging.getLogger(__name__)
+PARALLEL_UPDATES = 0
 
 _STATUS_MAP: dict[str, AlarmControlPanelState] = {
     "DISARM": AlarmControlPanelState.DISARMED,

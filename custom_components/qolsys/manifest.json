@@ -1,12 +1,17 @@
 {
   "domain": "qolsys",
   "name": "Qolsys IQ Panel",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "config_flow": true,
   "documentation": "https://github.com/Statio-Faith/hacs-qolsys",
   "issue_tracker": "https://github.com/Statio-Faith/hacs-qolsys/issues",
   "requirements": [],
-  "dependencies": [],
+  "dependencies": ["dhcp"],
+  "dhcp": [
+    {"macaddress": "3C3178*"},
+    {"macaddress": "18C1E2*"}
+  ],
   "codeowners": ["@Statio-Faith"],
-  "iot_class": "local_push"
+  "iot_class": "local_push",
+  "icon": "mdi:shield-home"
 }

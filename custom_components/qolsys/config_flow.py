@@ -7,6 +7,7 @@ import ssl
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
+from homeassistant.helpers.service_info.dhcp import DhcpServiceInfo
 
 from .const import (
     CONF_ARM_AWAY_BYPASS,
@@ -61,6 +62,14 @@ class QolsysConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def __init__(self):
         self._connection_data: dict = {}
+
+    async def async_step_dhcp(self, discovery_info: DhcpServiceInfo):
+        await self.async_set_unique_id(discovery_info.macaddress)
+        self._abort_if_unique_id_configured(
+            updates={CONF_PANEL_HOST: discovery_info.ip}
+        )
+        self._connection_data[CONF_PANEL_HOST] = discovery_info.ip
+        return await self.async_step_user()
 
     async def async_step_user(self, user_input=None):
         errors = {}
