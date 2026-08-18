@@ -27,11 +27,14 @@ from .qolsys.events import (
     QolsysEventZoneEventAdd,
     QolsysEventZoneEventUpdate,
 )
+from .qolsys.actions import QolsysActionInfo
 from .qolsys.exceptions import InvalidUserCodeException, MissingUserCodeException
 from .qolsys.socket import QolsysSocket
 from .qolsys.state import QolsysState
 
 LOGGER = logging.getLogger(__name__)
+
+STATE_REFRESH_INTERVAL = 5 * 60  # re-poll panel state every 5 minutes
 
 # Extra keys QolsysGatewayConfig expects but we don't expose in the UI.
 _CFG_DEFAULTS = {
@@ -101,6 +104,9 @@ class QolsysCoordinator:
             self.hass.async_create_background_task(
                 self._socket.keep_alive(), "qolsys_keepalive"
             ),
+            self.hass.async_create_background_task(
+                self._periodic_refresh(), "qolsys_refresh"
+            ),
         ]
         self.config_entry.async_on_unload(
             self.hass.bus.async_listen_once(
@@ -124,6 +130,23 @@ class QolsysCoordinator:
 
     async def wait_for_ready(self) -> None:
         await self._ready_event.wait()
+
+    async def _periodic_refresh(self) -> None:
+        """Re-poll the panel state every STATE_REFRESH_INTERVAL seconds.
+
+        The socket only delivers state changes via push events. If an arming
+        event is missed while the socket is momentarily disconnected, HA's
+        cached state goes stale. This loop sends an INFO SUMMARY request on a
+        fixed cadence so the state self-corrects regardless.
+        """
+        while True:
+            await asyncio.sleep(STATE_REFRESH_INTERVAL)
+            if self._available:
+                try:
+                    await self._socket.send(QolsysActionInfo())
+                    LOGGER.debug("Periodic state refresh sent")
+                except Exception:
+                    LOGGER.debug("Periodic refresh skipped — socket not ready")
 
     async def _on_connected(self) -> None:
         LOGGER.debug("Connected to Qolsys panel")
@@ -252,4 +275,7 @@ class QolsysCoordinator:
 
         action = control.action
         if action:
-            await self._socket.send(action)
+            try:
+                await self._socket.send(action)
+            except Exception as exc:
+                LOGGER.error("Failed to send control %s: %s", control, exc)
