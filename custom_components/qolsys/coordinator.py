@@ -56,7 +56,8 @@ class QolsysCoordinator:
         self._state = QolsysState()
         self._session_token: str = str(uuid.uuid4())
         self._available: bool = False
-        self._tasks: list[asyncio.Task] = []
+        self._refresh_task: asyncio.Task | None = None
+        self._ready_event = asyncio.Event()
 
         self._socket = QolsysSocket(
             hostname=self._cfg.panel_host,
@@ -93,14 +94,11 @@ class QolsysCoordinator:
         }
 
     async def async_setup(self) -> None:
-        self._tasks = [
-            self.hass.async_create_background_task(
-                self._socket.listen(), "qolsys_listen"
-            ),
-            self.hass.async_create_background_task(
-                self._socket.keep_alive(), "qolsys_keepalive"
-            ),
-        ]
+        self._socket.run_in_thread(self.hass.loop, name="qolsys_socket")
+
+        self._refresh_task = self.hass.async_create_background_task(
+            self._periodic_refresh(), "qolsys_refresh"
+        )
         self.config_entry.async_on_unload(
             self.hass.bus.async_listen_once(
                 EVENT_HOMEASSISTANT_STOP, self._on_hass_stop
@@ -108,10 +106,14 @@ class QolsysCoordinator:
         )
 
     async def async_shutdown(self) -> None:
-        for task in self._tasks:
-            task.cancel()
-        await asyncio.gather(*self._tasks, return_exceptions=True)
-        self._tasks = []
+        # Stop the periodic refresh task (on HA's loop)
+        if self._refresh_task:
+            self._refresh_task.cancel()
+            await asyncio.gather(self._refresh_task, return_exceptions=True)
+            self._refresh_task = None
+        # Signal the socket thread to stop (non-blocking — thread is a daemon
+        # and will be reaped naturally; tasks in its loop are cancelled)
+        self._socket.stop()
         self._available = False
         async_dispatcher_send(
             self.hass,
